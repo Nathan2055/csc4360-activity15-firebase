@@ -1,122 +1,246 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // Remove the debug banner
+      debugShowCheckedModeBanner: false,
+      title: 'Inventory Management App',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: InventoryHomePage(title: 'Inventory Home Page'),
+      /*
+      title: 'Test',
+      home: HomePage(),
+      */
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+class InventoryHomePage extends StatefulWidget {
+  InventoryHomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+  _InventoryHomePageState createState() => _InventoryHomePageState();
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  /*
+  const InventoryHomePage({Key? key}) : super(key: key);
+  
 
   @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+  State<InventoryHomePage> createState() => _InventoryHomePageState();
+  */
+}
+
+class _InventoryHomePageState extends State<InventoryHomePage> {
+  // TODO: 1. Initialize Firestore & Create a Stream for items
+  // TODO: 2. Build a ListView using a StreamBuilder to display items
+  // TODO: 3. Implement Navigation to an "Add Item" screen
+  // TODO: 4. Implement one of the Delete methods (swipe or in-edit)
+
+  Scaffold a15_homepage() {
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text('Inventory Management System'),
+            // TODO: Replace this Text widget with your StreamBuilder & ListView
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () {
+          // TODO: Navigate to the Add/Edit Item Form
+        },
+        tooltip: 'Add Item',
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  // text fields' controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+
+  final CollectionReference _products = FirebaseFirestore.instance.collection(
+    'products',
+  );
+
+  Future<void> _createOrUpdate([DocumentSnapshot? documentSnapshot]) async {
+    String action = 'create';
+    if (documentSnapshot != null) {
+      action = 'update';
+      _nameController.text = documentSnapshot['name'];
+      _priceController.text = documentSnapshot['price'].toString();
+    }
+
+    await showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            top: 20,
+            left: 20,
+            right: 20,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                controller: _priceController,
+                decoration: const InputDecoration(labelText: 'Price'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                child: Text(action == 'create' ? 'Create' : 'Update'),
+                onPressed: () async {
+                  String name = _nameController.text;
+                  double price = double.parse(_priceController.text);
+                  if (name.isNotEmpty && price != null) {
+                    if (action == 'create') {
+                      // Persist a new product to Firestore
+                      await _products.add({"name": name, "price": price});
+                    }
+
+                    if (action == 'update') {
+                      // Update the product
+                      await _products.doc(documentSnapshot!.id).update({
+                        "name": name,
+                        "price": price,
+                      });
+                    }
+
+                    _nameController.text = '';
+                    _priceController.text = '';
+
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Deleting a product by id
+  Future<void> _deleteProduct(String productId) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('You have successfully deleted a product')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('CRUD operations')),
+      // Using StreamBuilder to display all products from Firestore in real-time
+      body: StreamBuilder(
+        stream: _products.snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+          if (streamSnapshot.hasData) {
+            return ListView.builder(
+              itemCount: streamSnapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                final DocumentSnapshot documentSnapshot =
+                    streamSnapshot.data!.docs[index];
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  child: ListTile(
+                    title: Text(documentSnapshot['name']),
+                    subtitle: Text(documentSnapshot['price'].toString()),
+                    trailing: SizedBox(
+                      width: 100,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => _createOrUpdate(documentSnapshot),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () =>
+                                _deleteProduct(documentSnapshot.id),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
+      // Add new product
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _createOrUpdate(),
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
+
+/*
+Code Snippet Example: Firestore Query for Search
+Stream<QuerySnapshot> _searchProducts(String query) {
+  return FirebaseFirestore.instance
+      .collection('products')
+      .where('name', isGreaterThanOrEqualTo: query)
+      .where('name', isLessThanOrEqualTo: query + '\uf8ff')
+      .snapshots();
+}
+Code Snippet Example: Firestore Query for Price Filter
+Stream<QuerySnapshot> _filterProductsByPrice(double minPrice, double maxPrice) {
+  return FirebaseFirestore.instance
+      .collection('products')
+      .where('price', isGreaterThanOrEqualTo: minPrice)
+      .where('price', isLessThanOrEqualTo: maxPrice)
+      .snapshots();
+}
+*/
+
+/*
+// In Home Screen - Floating Action Button
+onPressed: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => AddEditItemScreen()),
+  );
+},
+
+// In Home Screen List Item - Edit Navigation
+onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => AddEditItemScreen(item: item),
+    ),
+  );
+},
+*/
