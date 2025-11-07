@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 // Add/Edit Screen
 class AddEditItemScreen extends StatefulWidget {
+  const AddEditItemScreen({super.key});
+
   // TODO: Accept optional Item parameter for editing
   @override
   _AddEditItemScreenState createState() => _AddEditItemScreenState();

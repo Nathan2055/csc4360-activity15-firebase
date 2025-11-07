@@ -4,6 +4,8 @@ import 'package:firebasedemo/models/item.dart';
 
 // Home Screen
 class InventoryHomePage extends StatelessWidget {
+  const InventoryHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
