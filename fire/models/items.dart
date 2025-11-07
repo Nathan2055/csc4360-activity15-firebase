@@ -1,11 +1,12 @@
-Class item {
+import 'package:cloud_firestore/cloud_firestore.dart';
+class item {
 
     final String id;
     final String name;
     final int quantity;
     final double price;
     final String category;
-    final Datetime createdAt;
+    final DateTime createdAt;
     
 
 
@@ -15,10 +16,10 @@ Class item {
         required this.price,
         required this.category,
         required this.createdAt,
-        
+        required this.id,
     });
 
-}
+
 
 
 //convert item to a firestore-friendly map data
@@ -49,4 +50,4 @@ Map<String, dynamic> toMap() {
 }
 
 
-
+}
