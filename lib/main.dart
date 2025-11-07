@@ -19,29 +19,16 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Inventory Management App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: InventoryHomePage(title: 'Inventory Home Page'),
-      /*
-      title: 'Test',
-      home: HomePage(),
-      */
+      home: InventoryHomePage(),
     );
   }
 }
 
 class InventoryHomePage extends StatefulWidget {
-  InventoryHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _InventoryHomePageState createState() => _InventoryHomePageState();
-
-  /*
-  const InventoryHomePage({Key? key}) : super(key: key);
-  
+  const InventoryHomePage({super.key});
 
   @override
   State<InventoryHomePage> createState() => _InventoryHomePageState();
-  */
 }
 
 class _InventoryHomePageState extends State<InventoryHomePage> {
@@ -49,28 +36,6 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
   // TODO: 2. Build a ListView using a StreamBuilder to display items
   // TODO: 3. Implement Navigation to an "Add Item" screen
   // TODO: 4. Implement one of the Delete methods (swipe or in-edit)
-
-  Scaffold a15_homepage() {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Inventory Management System'),
-            // TODO: Replace this Text widget with your StreamBuilder & ListView
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to the Add/Edit Item Form
-        },
-        tooltip: 'Add Item',
-        child: Icon(Icons.add),
-      ),
-    );
-  }
 
   // text fields' controllers
   final TextEditingController _nameController = TextEditingController();
@@ -118,7 +83,7 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
                 onPressed: () async {
                   String name = _nameController.text;
                   double price = double.parse(_priceController.text);
-                  if (name.isNotEmpty && price != null) {
+                  if (name.isNotEmpty && !price.isNaN && !price.isFinite) {
                     if (action == 'create') {
                       // Persist a new product to Firestore
                       await _products.add({"name": name, "price": price});
@@ -198,8 +163,10 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
         },
       ),
       // Add new product
+      // TODO: Navigate to the Add/Edit Item Form
       floatingActionButton: FloatingActionButton(
         onPressed: () => _createOrUpdate(),
+        tooltip: 'Add Item',
         child: const Icon(Icons.add),
       ),
     );
