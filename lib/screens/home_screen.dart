@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:firebasedemo/models/firestore_service.dart';
+import 'package:firebasedemo/models/item.dart';
+
 // Home Screen
 class InventoryHomePage extends StatelessWidget {
   @override

@@ -1,3 +1,5 @@
+import 'package:firebasedemo/models/item.dart';
+
 class FirestoreService {
   // TODO: Create collection reference for 'items'
 
