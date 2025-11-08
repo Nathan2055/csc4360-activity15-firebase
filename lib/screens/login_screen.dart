@@ -54,39 +54,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget usernameField() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24),
-      child: TextFormField(
-        controller: _usernameController,
-        decoration: InputDecoration(
-          labelText: 'Username',
-          prefixIcon: const Icon(Icons.person),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        ),
+    return TextFormField(
+      controller: _usernameController,
+      decoration: InputDecoration(
+        labelText: 'Username',
+        prefixIcon: const Icon(Icons.person),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
 
   Widget passwordField() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24),
-      child: TextFormField(
-        controller: _passwordController,
-        obscureText: !_isPasswordVisible,
-        decoration: InputDecoration(
-          labelText: 'Password',
-          prefixIcon: const Icon(Icons.lock),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          suffixIcon: IconButton(
-            icon: Icon(
-              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            ),
-            onPressed: () {
-              setState(() {
-                _isPasswordVisible = !_isPasswordVisible;
-              });
-            },
+    return TextFormField(
+      controller: _passwordController,
+      obscureText: !_isPasswordVisible,
+      decoration: InputDecoration(
+        labelText: 'Password',
+        prefixIcon: const Icon(Icons.lock),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
           ),
+          onPressed: () {
+            setState(() {
+              _isPasswordVisible = !_isPasswordVisible;
+            });
+          },
         ),
       ),
     );
