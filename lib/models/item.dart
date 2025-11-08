@@ -10,9 +10,9 @@ class Item {
 
   Item({
     required this.name,
-    required this.quantity,
+    this.quantity = 1,
     required this.price,
-    required this.category,
+    this.category = "default",
     required this.createdAt,
     required this.id,
   });

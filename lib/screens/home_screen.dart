@@ -1,5 +1,8 @@
+import 'package:firebasedemo/models/firestore_service.dart';
+import 'package:firebasedemo/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 // Home Screen
 class InventoryHomePage extends StatefulWidget {
@@ -16,10 +19,42 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
-  // Firestore 'products' collection reference
-  final CollectionReference _products = FirebaseFirestore.instance.collection(
-    'products',
-  );
+  Future<void> _sendCreateOrUpdate(
+    String action,
+    String name,
+    double price,
+    String id,
+  ) async {
+    debugPrint(id);
+    debugPrint(action);
+    debugPrint(name);
+    debugPrint(price.toString());
+    if (name.isNotEmpty && !price.isNaN && price.isFinite) {
+      debugPrint(action);
+      if (action == 'create') {
+        // Persist a new product to Firestore
+        debugPrint('creating item');
+        Item item = Item(
+          id: Uuid().v4(),
+          name: name,
+          price: price,
+          createdAt: DateTime.now(),
+        );
+        debugPrint('item created');
+        debugPrint(item.toString());
+        String finalid = await FirestoreService().addItem(item);
+        debugPrint(finalid);
+      }
+
+      if (action == 'update') {
+        // Update the product
+        await FirestoreService().updateItemByID(id, name, price);
+      }
+
+      _nameController.text = '';
+      _priceController.text = '';
+    }
+  }
 
   // Create or update a Firestore product entry
   Future<void> _createOrUpdate([DocumentSnapshot? documentSnapshot]) async {
@@ -57,28 +92,18 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 child: Text(action == 'create' ? 'Create' : 'Update'),
-                onPressed: () async {
-                  String name = _nameController.text;
-                  double price = double.parse(_priceController.text);
-                  if (name.isNotEmpty && !price.isNaN && !price.isFinite) {
-                    if (action == 'create') {
-                      // Persist a new product to Firestore
-                      await _products.add({"name": name, "price": price});
-                    }
-
-                    if (action == 'update') {
-                      // Update the product
-                      await _products.doc(documentSnapshot!.id).update({
-                        "name": name,
-                        "price": price,
-                      });
-                    }
-
-                    _nameController.text = '';
-                    _priceController.text = '';
-
-                    Navigator.of(context).pop();
+                onPressed: () {
+                  var id = '';
+                  if (documentSnapshot?.id != null) {
+                    id = documentSnapshot!.id;
                   }
+                  _sendCreateOrUpdate(
+                    action,
+                    _nameController.text,
+                    double.parse(_priceController.text),
+                    id,
+                  );
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -119,9 +144,10 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Firebase Inventory Management')),
       // Using StreamBuilder to display all products from Firestore in real-time
       body: StreamBuilder(
-        stream: _products.snapshots(),
+        stream: FirestoreService().getRawItemsStream(),
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
           // Once the database is ready, build a ListView with Cards
           if (streamSnapshot.hasData) {
@@ -141,7 +167,10 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.edit),
-                            onPressed: () => _createOrUpdate(documentSnapshot),
+                            onPressed: () =>
+                                debugPrint(documentSnapshot.id.toString()),
+
+                            //onPressed: () => _createOrUpdate(documentSnapshot),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),

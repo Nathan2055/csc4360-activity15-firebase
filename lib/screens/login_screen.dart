@@ -53,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Firebase Inventory Management')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(64.0),
