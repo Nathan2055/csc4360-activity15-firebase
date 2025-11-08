@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Home Screen
 class InventoryHomePage extends StatefulWidget {
-  const InventoryHomePage({super.key});
+  const InventoryHomePage({super.key, this.readOnly = false});
+
+  final bool readOnly;
 
   @override
   State<InventoryHomePage> createState() => _InventoryHomePageState();
