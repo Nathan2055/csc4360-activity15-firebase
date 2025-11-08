@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebasedemo/models/firestore_service.dart';
-import 'package:firebasedemo/models/item.dart';
 
 // Home Screen
 class InventoryHomePage extends StatefulWidget {
@@ -93,6 +91,7 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     );
   }
 
+  /*
   //Code Snippet Example: Firestore Query for Search
   Stream<QuerySnapshot> _searchProducts(String query) {
     return FirebaseFirestore.instance
@@ -113,6 +112,7 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
         .where('price', isLessThanOrEqualTo: maxPrice)
         .snapshots();
   }
+  */
 
   @override
   Widget build(BuildContext context) {
