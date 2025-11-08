@@ -105,14 +105,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget buildForm() {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
+      body: Center(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(64.0),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 24.0,
               children: [usernameField(), passwordField(), submitButton()],
             ),
           ),
