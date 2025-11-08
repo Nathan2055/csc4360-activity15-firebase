@@ -1,25 +1,38 @@
-import 'package:firebasedemo/models/item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'items.dart';
 
 class FirestoreService {
-  // TODO: Create collection reference for 'items'
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final String collectionName = 'items';
 
-  // TODO: Implement addItem method
-  Future<void> addItem(Item item) async {
-    // TODO: Convert item to map and add to collection
+    Future<void> addItem(Item item) async {
+        await _firestore.collection(collectionName).add(item.toMap());
+    }
+
+    Stream<List<Item>> getItemsStream() {
+        return _firestore
+        .collection(collectionName)
+        .snapshots()
+        .map((snapshot) => 
+        snapshot.docs.map((doc) => Item.fromSnapshot(doc)).toList());
+    }
+
+    Future<void> updateItem(Item item) async {
+        try {
+      await _firestore
+          .collection(_collectionPath)
+          .doc(item.id)
+          .update(item.toMap());
+    } catch (e) {
+      print('Error updating item: $e');
+    }
   }
 
-  // TODO: Implement getItemsStream method
-  Stream<List<Item>> getItemsStream() {
-    // TODO: Return stream of items from Firestore
-  }
-
-  // TODO: Implement updateItem method
-  Future<void> updateItem(Item item) async {
-    // TODO: Update specific document by ID
-  }
-
-  // TODO: Implement deleteItem method
-  Future<void> deleteItem(String itemId) async {
-    // TODO: Delete document by ID
+    Future<void> deleteItem(String id) async {
+       try {
+      await _firestore.collection(_collectionPath).doc(id).delete();
+    } catch (e) {
+      print('Error deleting item: $e');
+    }
   }
 }
