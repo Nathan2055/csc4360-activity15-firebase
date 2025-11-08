@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebasedemo/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,33 +26,28 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
 
   void _submitForm() {
-    /*
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      // Simulate API call
-      Future.delayed(const Duration(seconds: 2), () {
-        if (!mounted) return; // Check if the widget is still in the tree
-        setState(() {
-          _isLoading = false;
-        });
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SuccessScreen(
-              userName: _nameController.text,
-              selectedIcon: _selectedIcon,
-              finalProfileCompletion: _progressValue,
-              finalPasswordStrength: _passwordStrengthValue,
-            ),
-          ),
-        );
-      });
+    if (_usernameController.text == adminUsername &&
+        _passwordController.text == adminPassword) {
+      // Login as admin
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => InventoryHomePage()),
+      );
+    } else if (_usernameController.text == viewerUsername &&
+        _passwordController.text == viewerPassword) {
+      // Login as viewer
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InventoryHomePage(readOnly: true),
+        ),
+      );
+    } else {
+      // Show error for incorrect credentials
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Incorrect username and/or password')),
+      );
     }
-    */
   }
 
   @override
