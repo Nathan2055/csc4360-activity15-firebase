@@ -1,38 +1,41 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'items.dart';
+import 'package:firebasedemo/models/item.dart';
 
 class FirestoreService {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    final String collectionName = 'items';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String collectionName = 'items';
 
-    Future<void> addItem(Item item) async {
-        await _firestore.collection(collectionName).add(item.toMap());
-    }
+  Future<void> addItem(Item item) async {
+    await _firestore.collection(collectionName).add(item.toMap());
+  }
 
-    Stream<List<Item>> getItemsStream() {
-        return _firestore
+  Stream<List<Item>> getItemsStream() {
+    return _firestore
         .collection(collectionName)
         .snapshots()
-        .map((snapshot) => 
-        snapshot.docs.map((doc) => Item.fromSnapshot(doc)).toList());
-    }
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Item.fromSnapshot(doc)).toList(),
+        );
+  }
 
-    Future<void> updateItem(Item item) async {
-        try {
+  Future<void> updateItem(Item item) async {
+    try {
       await _firestore
-          .collection(_collectionPath)
+          .collection(collectionName)
           .doc(item.id)
           .update(item.toMap());
     } catch (e) {
-      print('Error updating item: $e');
+      debugPrint('Error updating item: $e');
     }
   }
 
-    Future<void> deleteItem(String id) async {
-       try {
-      await _firestore.collection(_collectionPath).doc(id).delete();
+  Future<void> deleteItem(String id) async {
+    try {
+      await _firestore.collection(collectionName).doc(id).delete();
     } catch (e) {
-      print('Error deleting item: $e');
+      debugPrint('Error deleting item: $e');
     }
   }
 }
