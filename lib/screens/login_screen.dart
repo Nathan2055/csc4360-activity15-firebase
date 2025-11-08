@@ -8,9 +8,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // Form state key
   final _formKey = GlobalKey<FormState>();
 
-  // Hardcoded logins
+  // Hardcoded login details
   final String adminUsername = 'admin';
   final String adminPassword = 'admin';
   final String viewerUsername = 'viewer';
@@ -20,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Track password visibility
+  // Track password visibility for the "show password" toggle
   bool _isPasswordVisible = false;
 
   void _submitForm() {
@@ -53,50 +54,8 @@ class _LoginScreenState extends State<LoginScreen> {
     */
   }
 
-  Widget usernameField() {
-    return TextFormField(
-      controller: _usernameController,
-      decoration: InputDecoration(
-        labelText: 'Username',
-        prefixIcon: const Icon(Icons.person),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
-
-  Widget passwordField() {
-    return TextFormField(
-      controller: _passwordController,
-      obscureText: !_isPasswordVisible,
-      decoration: InputDecoration(
-        labelText: 'Password',
-        prefixIcon: const Icon(Icons.lock),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-          ),
-          onPressed: () {
-            setState(() {
-              _isPasswordVisible = !_isPasswordVisible;
-            });
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget submitButton() {
-    return ElevatedButton(
-      onPressed: _submitForm,
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text('Login')],
-      ),
-    );
-  }
-
-  Widget buildForm() {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -107,21 +66,58 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               spacing: 24.0,
-              children: [usernameField(), passwordField(), submitButton()],
+              children: [
+                // Username field
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+
+                // Password field
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: !_isPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: const Icon(Icons.lock),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+
+                // Submit button
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text('Login')],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    //throw UnimplementedError();
-
-    var form = buildForm();
-
-    return form;
+    ;
   }
 }
