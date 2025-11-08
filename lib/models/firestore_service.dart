@@ -20,7 +20,7 @@ class FirestoreService {
     Future<void> updateItem(Item item) async {
         try {
       await _firestore
-          .collection(_collectionPath)
+          .collection(collectionName)
           .doc(item.id)
           .update(item.toMap());
     } catch (e) {
@@ -30,7 +30,7 @@ class FirestoreService {
 
     Future<void> deleteItem(String id) async {
        try {
-      await _firestore.collection(_collectionPath).doc(id).delete();
+      await _firestore.collection(collectionName).doc(id).delete();
     } catch (e) {
       print('Error deleting item: $e');
     }
