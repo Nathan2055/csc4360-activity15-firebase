@@ -35,5 +35,4 @@ class FirestoreService {
       print('Error deleting item: $e');
     }
   }
-  */
 }
