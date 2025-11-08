@@ -1,6 +1,7 @@
 class Item {
   // TODO: Declare fields (id, name, quantity, price, category, createdAt)
 
+  /*
   Item(); // unnamed constructor
 
   // TODO: Create constructor with named parameters
@@ -18,4 +19,5 @@ class Item {
       // TODO: Extract values from map
     );
   }
+  */
 }
