@@ -10,14 +10,16 @@ class InventoryHomePage extends StatefulWidget {
 }
 
 class _InventoryHomePageState extends State<InventoryHomePage> {
-  // text fields' controllers
+  // Text field controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
+  // Firestore 'products' collection reference
   final CollectionReference _products = FirebaseFirestore.instance.collection(
     'products',
   );
 
+  // Create or update a Firestore product entry
   Future<void> _createOrUpdate([DocumentSnapshot? documentSnapshot]) async {
     String action = 'create';
     if (documentSnapshot != null) {
@@ -84,24 +86,23 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
     );
   }
 
-  // Deleting a product by id
+  // Delete a Firestore product entry by id
   Future<void> _deleteProduct(String productId) async {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('You have successfully deleted a product')),
     );
   }
 
-  /*
-  //Code Snippet Example: Firestore Query for Search
+  // Firestore query for search
   Stream<QuerySnapshot> _searchProducts(String query) {
     return FirebaseFirestore.instance
         .collection('products')
         .where('name', isGreaterThanOrEqualTo: query)
-        .where('name', isLessThanOrEqualTo: query + '\uf8ff')
+        .where('name', isLessThanOrEqualTo: '$query\uf8ff')
         .snapshots();
   }
 
-  //Code Snippet Example: Firestore Query for Price Filter
+  // Firestore query for price filter
   Stream<QuerySnapshot> _filterProductsByPrice(
     double minPrice,
     double maxPrice,
@@ -112,7 +113,6 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
         .where('price', isLessThanOrEqualTo: maxPrice)
         .snapshots();
   }
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +121,7 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
       body: StreamBuilder(
         stream: _products.snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+          // Once the database is ready, build a ListView with Cards
           if (streamSnapshot.hasData) {
             return ListView.builder(
               itemCount: streamSnapshot.data!.docs.length,
@@ -153,52 +154,16 @@ class _InventoryHomePageState extends State<InventoryHomePage> {
               },
             );
           }
-
+          // Show loading indicator if the database is not ready
           return const Center(child: CircularProgressIndicator());
         },
       ),
-      // Add new product
-      // TODO: Navigate to the Add/Edit Item Form
+      // Add a new product
       floatingActionButton: FloatingActionButton(
         onPressed: () => _createOrUpdate(),
         tooltip: 'Add Item',
         child: const Icon(Icons.add),
       ),
-      /*
-      body: StreamBuilder<List<Item>>(
-        stream: FirestoreService().getItemsStream(),
-        builder: (context, snapshot) {
-          // TODO: Handle loading state
-          // TODO: Handle error state
-          // TODO: Handle empty state
-          // TODO: Build ListView with item data
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to AddEditItemScreen
-        },
-        child: Icon(Icons.add),
-      ),
-
-      // In Home Screen - Floating Action Button
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AddEditItemScreen()),
-        );
-      },
-
-      // In Home Screen List Item - Edit Navigation
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AddEditItemScreen(item: item),
-          ),
-        );
-      },
-      */
     );
   }
 }

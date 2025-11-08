@@ -9,23 +9,16 @@ void main() async {
   runApp(const FirebaseDemoApp());
 }
 
-// TODO: 1. Initialize Firestore & Create a Stream for items
-// TODO: 2. Build a ListView using a StreamBuilder to display items
-// TODO: 3. Implement Navigation to an "Add Item" screen
-// TODO: 4. Implement one of the Delete methods (swipe or in-edit)
-
 class FirebaseDemoApp extends StatelessWidget {
   const FirebaseDemoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Remove the debug banner
       debugShowCheckedModeBanner: false,
-      title: 'Inventory Management App',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      title: 'Firebase Inventory Management',
       home: Scaffold(
-        appBar: AppBar(title: const Text('CRUD operations')),
+        appBar: AppBar(title: const Text('Firebase Inventory Management')),
         body: InventoryHomePage(),
       ),
     );
