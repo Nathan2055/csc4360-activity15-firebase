@@ -98,7 +98,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildForm() {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(64.0),
